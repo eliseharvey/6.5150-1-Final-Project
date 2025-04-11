@@ -8,47 +8,36 @@
 ;;;;;    Game State Construction    ;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (make-player name hand) -> player-alist
-;; creates a player record with a name and starting hand
-(define (make-player name hand)
-  `((name . ,name)
-    (hand . ,hand)))
-
-;; (make-game-state players deck current-player turn history) -> game-state-alist
+;; (make-game-state deck hand bucket) -> game-state-alist
 ;; constructs a new game state object with players, deck, current turn and history
-(define (make-game-state players deck current-player turn history)
-  `((players . ,players)
-    (deck . ,deck)
-    (current-player . ,current-player)
-    (turn . ,turn)
-    (history . ,history))) ;; FLAG: we might not want this? could be beneficial for debugging or implementing bot strategies (if a bots move is going to depend on history or something like that)
-
+(define (make-game-state deck hand bucket)
+  `((deck . ,deck)
+    (hand . ,hand)
+    (bucket . ,bucket)))
+;; to initialize game, call (make-game-state make-deck (list '()) (list '() '() '() '())
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;        Accessor Helpers       ;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; returns the full list of players
-(define (get-players state)
-  (assoc 'players state))
 
 ;; returns the current deck from the state
 (define (get-deck state)
   (assoc 'deck state))
 
 ;; (get-player-hand state name) -> list-of-cards
-;; retrieves a player's hand by name
-(define (get-player-hand state name)
-  (let ((players (cdr (get-players state))))
-    (cdr (assoc 'hand (assoc name (map (lambda (p) (cons (cdr (assoc 'name p)) p)) players))))))
+;; retrieves the player's hand
+(define (get-player-hand state)
+  (assoc 'hand state)
+)
+;; (get-bucket state) -> list-of-buckets
+;; retrives the current "stacks" in the bucket
+(define (get-bucket state)
+  (cdr (assoc 'bucket state)))
 
-;; gets the current turn number from the state
-(define (get-turn state)
-  (cdr (assoc 'turn state)))
-
-;; gets the symbol of the player whose turn it currently is
-(define (get-current-player state)
-  (cdr (assoc 'current-player state)))
+;; (get-stack state index) -> list with stack
+;; gets stack based on index
+(define (get-stack state index)
+  (list-ref (get-bucket state) index))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -62,52 +51,30 @@
   (cons (cons key val)
         (remove (lambda (kv) (eq? (car kv) key)) alist)))
 
-;; (update-player-hand state player-name new-hand) -> updated-state
-;; replaces the hand of the specified player with a new one
-(define (update-player-hand state player-name new-hand)
-  (let* ((players (cdr (get-players state)))
-         (updated-players
-          (map (lambda (p)
-                 (if (equal? (cdr (assoc 'name p)) player-name)
-                     (assoc-set p 'hand new-hand)
-                     p))
-               players)))
-    (assoc-set state 'players updated-players)))
+;; (update-player-hand state new-hand) -> updated-state
+;; replace current hand with hand passed in
+(define (update-player-hand state new-hand)
+  (assoc-set state 'hand new-hand))
 
 ;; (update-deck state new-deck) -> updated-state
 ;; replaces the deck in the game state
+;; TODO: Eli writes better update deck
 (define (update-deck state new-deck)
   (assoc-set state 'deck new-deck))
 
-;; increments the turn counter by 1
-;; this could potentially help drive the core game engine
-(define (advance-turn state)
-  (assoc-set state 'turn (+ 1 (get-turn state))))
+;; helper for updating stack (see below)
+(define (replace-nth lst n new-val)
+  (if (null? lst)
+      '()
+      (if (= n 0)
+          (cons new-val (cdr lst))
+          (cons (car lst) (replace-nth (cdr lst) (- n 1) new-val)))))
 
-;; sets the current player by name
-(define (set-current-player state name)
-  (assoc-set state 'current-player name))
-
-;; adds a new entry to the game history (prepend)
-(define (add-to-history state entry)
-  (let ((history (cdr (assoc 'history state))))
-    (assoc-set state 'history (cons entry history))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;      Player Manipulation      ;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (add-player state name hand) -> updated-state
-;; adds a new player to the game state
-(define (add-player state name hand)
-  (let* ((players (cdr (get-players state)))
-         (new-player (make-player name hand)))
-    (assoc-set state 'players (cons new-player players))))
-
-;; returns a list of all player names
-(define (get-player-names state)
-  (map (lambda (p) (cdr (assoc 'name p))) (cdr (get-players state))))
+;; (update stack state index new-stack) -> updated-state
+;; helper that will take in game state and replace the stack at index with new-stack
+(define (update-stack state index new-stack)
+  (let ((bucket (get-bucket state)))
+    (assoc-set state 'bucket (replace-nth bucket index new-stack))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -119,13 +86,32 @@
 ;; relies on (card->string card) from cards.scm
 (define (print-game-state state)
   (display "=== Game State ===\n")
-  (for-each
-   (lambda (p)
-     (display (string-append (symbol->string (cdr (assoc 'name p))) "'s hand: "))
-     (display (map card->string (cdr (assoc 'hand p))))
-     (newline))
-   (cdr (get-players state)))
-  (display (string-append "Deck size: " (number->string (length (cdr (get-deck state)))) "\n"))
-  (display (string-append "Current turn: " (number->string (get-turn state)) "\n"))
-  (display (string-append "Current player: " (symbol->string (get-current-player state)) "\n"))
-  (display "==================\n")) ;; FLAG: we should maybe move this to the core game engine that will drive turns in the game
+  ;; hand
+  (display "Current hand: ")
+  (display (map card->string (cdr (assoc 'hand state))))
+  (newline)
+  (newline)
+  ;; stacks
+  (display "Stacks:\n")
+  (let ((bucket (cdr (assoc 'bucket state))))
+    (for-each-indexed
+     (lambda (stack i)
+       (display (string-append "  Stack " (number->string i) ": "))
+       (display (map card->string stack))
+       (newline))
+     bucket))
+  (newline)
+  ;; deck
+  (display (string-append "Deck size: "
+                          (number->string (length (cdr (assoc 'deck state))))
+                          "\n"))
+  (display "==================\n"))
+
+;; Helper: for-each-indexed
+(define (for-each-indexed f lst)
+  (define (loop lst i)
+    (unless (null? lst)
+      (begin
+        (f (car lst) i)
+        (loop (cdr lst) (+ i 1)))))
+  (loop lst 0))
