@@ -1,7 +1,7 @@
 ;;; game-state.scm
 
 
-(load "/path_to/cards.scm")
+;;(load "/path_to/cards.scm")
 ;; for Elise, path to ~/Desktop/6.5150_1 Final Project/
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -24,21 +24,15 @@
 (define (get-deck state)
   (assoc 'deck state))
 
-;; (get-player-hand state name) -> list-of-cards
+;; (get-player-hand state) -> list-of-cards
 ;; retrieves the player's hand
 (define (get-player-hand state)
   (assoc 'hand state)
 )
 ;; (get-bucket state) -> list-of-buckets
-;; retrives the current "stacks" in the bucket
+;; retrives the buckets
 (define (get-bucket state)
   (cdr (assoc 'bucket state)))
-
-;; (get-stack state index) -> list with stack
-;; gets stack based on index
-(define (get-stack state index)
-  (list-ref (get-bucket state) index))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Update Helpers (pure/immutable)   ;;;
@@ -49,7 +43,7 @@
 ;; helper for updating game states (see helpers below) 
 (define (assoc-set alist key val)
   (cons (cons key val)
-        (remove (lambda (kv) (eq? (car kv) key)) alist)))
+        (filter (lambda (kv) (not (eq? (car kv) key))) alist)))
 
 ;; (update-player-hand state new-hand) -> updated-state
 ;; replace current hand with hand passed in
@@ -62,20 +56,12 @@
 (define (update-deck state new-deck)
   (assoc-set state 'deck new-deck))
 
-;; helper for updating stack (see below)
-(define (replace-nth lst n new-val)
-  (if (null? lst)
-      '()
-      (if (= n 0)
-          (cons new-val (cdr lst))
-          (cons (car lst) (replace-nth (cdr lst) (- n 1) new-val)))))
+(define (get-bucket-value state index)
+  (list-ref (get-bucket state) index))
 
-;; (update stack state index new-stack) -> updated-state
-;; helper that will take in game state and replace the stack at index with new-stack
-(define (update-stack state index new-stack)
-  (let ((bucket (get-bucket state)))
-    (assoc-set state 'bucket (replace-nth bucket index new-stack))))
-
+(define (update-bucket-value state index new-value)
+  (let ((buckets (get-bucket state)))
+    (assoc-set state 'bucket (replace-nth buckets index new-value))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;    Debug / Print Utilities    ;;;;;
