@@ -14,6 +14,8 @@
 (define (make-deck)
   (shuffle (cartesian-product ranks suits)))
 
+(define (make-custom-deck custom-ranks custom-suits)
+  (shuffle (cartesian-product custom-ranks custom-suits)))
 
 
 (define (shuffle deck)
@@ -64,17 +66,10 @@
 (define (discard-all-occur deck card)
   (remove-all card deck))
 
-(define (make-custom-deck custom-ranks custom-suits)
-  (shuffle (cartesian-product custom-ranks custom-suits)))
 
-
-
-
-
-
-
-
-
-
-
-
+(define (card-value card)
+  (let ((rank (if (list? (car card)) (car (car card)) (car card))))
+    (cond ((eq? rank 'a) 11)
+          ((member rank '(k q j 10)) 10)
+          ((number? rank) rank)
+          (else 0))))
