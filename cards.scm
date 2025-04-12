@@ -41,11 +41,28 @@
 
 (define (draw-card deck)
   (if (null? deck)
-      '()  ;; Return an empty list if the deck is empty
+      '()  
       (car deck))) 
 
-(define (discard-card deck card)
-  (remove card deck))
+(define (remove item lst all?)
+  (cond ((null? lst) '())
+        ((equal? (car lst) item)
+         (if all?
+             (remove item (cdr lst) all?)  
+             (cdr lst)))                   
+        (else (cons (car lst) (remove item (cdr lst) all?)))))
+
+(define (remove-first item lst)
+  (remove item lst #f))
+
+(define (remove-all item lst)
+  (remove item lst #t))
+
+(define (discard-first-occur deck card)
+  (remove-first card deck))
+
+(define (discard-all-occur deck card)
+  (remove-all card deck))
 
 (define (make-custom-deck custom-ranks custom-suits)
   (shuffle (cartesian-product custom-ranks custom-suits)))
