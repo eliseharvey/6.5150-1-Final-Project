@@ -8,7 +8,7 @@
 
 #|
 To play:
-   1. Update file paths in this file, gmae-commands, and game-state.
+   1. Update file paths in this file and game-commands.
    2. Load this file.
    3. In the REPL, start game with (start-game).
 
