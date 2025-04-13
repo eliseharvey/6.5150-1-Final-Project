@@ -14,6 +14,7 @@ To play:
 
 TODO: make the game actually end with win/lose?
 TODO: make the non-numerical cards have value?
+TODO: for some reason, you can pick mutliple cards right now... Umpire not enforcing?
 |#
 
 (define game-state '())
