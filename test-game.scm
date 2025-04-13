@@ -1,5 +1,5 @@
 (load "path-to/6.5150-1-Final-Project/cards.scm")
-(load "path-to/6.5150-1-Final-Project/gamestate.scm")
+(load "path-to/6.5150-1-Final-Project/game-state.scm")
 (load "path-to/6.5150-1-Final-Project/utils.scm")
 (load "path-to/6.5150-1-Final-Project/game-commands.scm")
 

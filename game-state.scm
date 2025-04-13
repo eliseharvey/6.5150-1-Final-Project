@@ -1,9 +1,6 @@
 ;;; game-state.scm
 
 
-;;(load "/path_to/cards.scm")
-;; for Elise, path to ~/Desktop/6.5150_1 Final Project/
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;    Game State Construction    ;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -14,7 +11,7 @@
   `((deck . ,deck)
     (hand . ,hand)
     (bucket . ,bucket)))
-;; to initialize game, call (make-game-state make-deck (list '()) (list '() '() '() '())
+;; to initialize game, call (make-game-state make-deck '() '(0 0 0 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;        Accessor Helpers       ;;;;;
@@ -27,8 +24,8 @@
 ;; (get-player-hand state) -> list-of-cards
 ;; retrieves the player's hand
 (define (get-player-hand state)
-  (assoc 'hand state)
-)
+  (assoc 'hand state))
+
 ;; (get-bucket state) -> list-of-buckets
 ;; retrives the buckets
 (define (get-bucket state)
@@ -59,45 +56,13 @@
 (define (get-bucket-value state index)
   (list-ref (get-bucket state) index))
 
+(define (replace-nth lst n new-val)
+   (if (null? lst)
+       '()
+       (if (= n 0)
+           (cons new-val (cdr lst))
+           (cons (car lst) (replace-nth (cdr lst) (- n 1) new-val)))))
+
 (define (update-bucket-value state index new-value)
   (let ((buckets (get-bucket state)))
     (assoc-set state 'bucket (replace-nth buckets index new-value))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;    Debug / Print Utilities    ;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (print-game-state state) -> void
-;; nicely prints out the current game state to the console
-;; relies on (card->string card) from cards.scm
-(define (print-game-state state)
-  (display "=== Game State ===\n")
-  ;; hand
-  (display "Current hand: ")
-  (display (map card->string (cdr (assoc 'hand state))))
-  (newline)
-  (newline)
-  ;; stacks
-  (display "Stacks:\n")
-  (let ((bucket (cdr (assoc 'bucket state))))
-    (for-each-indexed
-     (lambda (stack i)
-       (display (string-append "  Stack " (number->string i) ": "))
-       (display (map card->string stack))
-       (newline))
-     bucket))
-  (newline)
-  ;; deck
-  (display (string-append "Deck size: "
-                          (number->string (length (cdr (assoc 'deck state))))
-                          "\n"))
-  (display "==================\n"))
-
-;; Helper: for-each-indexed
-(define (for-each-indexed f lst)
-  (define (loop lst i)
-    (unless (null? lst)
-      (begin
-        (f (car lst) i)
-        (loop (cdr lst) (+ i 1)))))
-  (loop lst 0))

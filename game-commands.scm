@@ -1,3 +1,7 @@
+;; game-commands.scm
+
+
+(load "/path-to/6.5150-1-Final-Project/umpire.scm")
 
 
 (define (update-with-pick state)
@@ -23,19 +27,16 @@
 
 
 (define (pick-card state)
-  (update-with-pick state))
+  (if (umpire state "pick")
+      (update-with-pick state)
+      (display "You cannot pick a card.")))
 
 
 (define (place-card state bucket-number)
   (let ((hand (cdr (get-player-hand state)))
         (buckets (get-bucket state))
-        (valid-move? #t))
+        (valid-move? (umpire state "place")))
     (if valid-move?
-        (if (null? hand)
-            (begin
-              (display "Hand is empty, cannot place a card.")
-              (newline)
-              state)
             (let* ((card (car hand))
                    (new-hand (cdr hand))
                    (bucket-index (- bucket-number 1)))
@@ -71,7 +72,7 @@
                               (newline)
                               updated-state)
                             ;; Neither win nor lose, continue game
-                            updated-state))))))
+                            updated-state)))))
         (begin
           (display "Invalid move.")
           (newline)
