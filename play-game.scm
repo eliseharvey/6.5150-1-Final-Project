@@ -1,10 +1,18 @@
 ;; play-game.scm
 
+;; Eli
+;;(load "path-to/6.5150-1-Final-Project/cards.scm")
+;;(load "path-to/6.5150-1-Final-Project/game-state.scm")
+;;(load "path-to/6.5150-1-Final-Project/utils.scm")
+;;(load "path-to/6.5150-1-Final-Project/game-commands.scm")
+;;(load "/path-to/6.5150-1-Final-Project/umpire.scm")
 
-(load "path-to/6.5150-1-Final-Project/cards.scm")
-(load "path-to/6.5150-1-Final-Project/game-state.scm")
-(load "path-to/6.5150-1-Final-Project/utils.scm")
-(load "path-to/6.5150-1-Final-Project/game-commands.scm")
+;; Elise
+;;(load "~/Desktop/6.5150-1-Final-Project/cards.scm")
+;;(load "~/Desktop/6.5150-1-Final-Project/game-state.scm")
+;;(load "~/Desktop/6.5150-1-Final-Project/utils.scm")
+;;(load "~/Desktop/6.5150-1-Final-Project/game-commands.scm")
+;;(load "~/Desktop/6.5150-1-Final-Project/umpire.scm")
 
 #|
 To play:

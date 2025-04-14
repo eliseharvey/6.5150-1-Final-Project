@@ -1,9 +1,6 @@
 ;; game-commands.scm
 
 
-(load "/path-to/6.5150-1-Final-Project/umpire.scm")
-
-
 (define (update-with-pick state)
   (let ((deck (cdr (get-deck state)))
         (hand (cdr (get-player-hand state))))
