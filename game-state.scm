@@ -49,7 +49,6 @@
 
 ;; (update-deck state new-deck) -> updated-state
 ;; replaces the deck in the game state
-;; TODO: Eli writes better update deck
 (define (update-deck state new-deck)
   (assoc-set state 'deck new-deck))
 

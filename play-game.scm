@@ -14,7 +14,6 @@
 #|
 ;; Elise
 
-#|
 (load "~/Desktop/6.5150-1-Final-Project/cards.scm")
 (load "~/Desktop/6.5150-1-Final-Project/game-state.scm")
 (load "~/Desktop/6.5150-1-Final-Project/utils.scm")
