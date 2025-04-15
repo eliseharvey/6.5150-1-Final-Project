@@ -57,34 +57,11 @@
                     (display "Updated buckets: ")
                     (display (get-bucket updated-state))
                     (newline)
-                    
-                    (if (win? updated-state)
-                        (begin
-                          (display "You win! Game over.")
-                          (newline)
-                          updated-state)
-                        (if (lose? updated-state)
-                            (begin
-                              (display "You lose! Game over.")
-                              (newline)
-                              updated-state)
-                            ;; Neither win nor lose, continue game
-                            updated-state)))))
+                    updated-state)))
         (begin
           (display "Invalid move.")
           (newline)
           state))))
-
-
-;; primative functions for now, will need to update state and restart game in future 
-
-(define (win? state)
-  (let ((buckets (get-bucket state)))
-    (andmap (lambda (bucket-value) (= bucket-value 21)) buckets)))
-
-(define (lose? state)
-  (let ((buckets (get-bucket state)))
-    (ormap (lambda (bucket-value) (> bucket-value 21)) buckets)))
 
 
 
