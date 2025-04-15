@@ -1,36 +1,36 @@
 ;; play-game.scm
 
+#|
 ;; Eli
-;;(load "path-to/6.5150-1-Final-Project/cards.scm")
-;;(load "path-to/6.5150-1-Final-Project/game-state.scm")
-;;(load "path-to/6.5150-1-Final-Project/utils.scm")
-;;(load "path-to/6.5150-1-Final-Project/game-commands.scm")
-;;(load "/path-to/6.5150-1-Final-Project/umpire.scm")
+(load "path-to/6.5150-1-Final-Project/cards.scm")
+(load "path-to/6.5150-1-Final-Project/game-state.scm")
+(load "path-to/6.5150-1-Final-Project/utils.scm")
+(load "path-to/6.5150-1-Final-Project/game-commands.scm")
+(load "/path-to/6.5150-1-Final-Project/umpire.scm")
+|#
 
+#|
 ;; Elise
-;;(load "~/Desktop/6.5150-1-Final-Project/cards.scm")
-;;(load "~/Desktop/6.5150-1-Final-Project/game-state.scm")
-;;(load "~/Desktop/6.5150-1-Final-Project/utils.scm")
-;;(load "~/Desktop/6.5150-1-Final-Project/game-commands.scm")
-;;(load "~/Desktop/6.5150-1-Final-Project/umpire.scm")
+(load "~/Desktop/6.5150-1-Final-Project/cards.scm")
+(load "~/Desktop/6.5150-1-Final-Project/game-state.scm")
+(load "~/Desktop/6.5150-1-Final-Project/utils.scm")
+(load "~/Desktop/6.5150-1-Final-Project/game-commands.scm")
+(load "~/Desktop/6.5150-1-Final-Project/umpire.scm")
+|#
+
 
 #|
 To play:
-   1. Update file paths in this file and game-commands.
-   2. Load this file.
-   3. In the REPL, start game with (start-game).
-
-TODO: make the game actually end with win/lose?
-TODO: make the non-numerical cards have value?
-TODO: for some reason, you can pick mutliple cards right now... Umpire not enforcing?
+   1. Load this file.
+   2. In the REPL, start game with (play-game).
 |#
 
 (define game-state '())
 
 
-;; (start-game) -> void
+;; (play-game) -> void
 ;; initializes a new game and sets the global `game-state` variable.
-(define (start-game)
+(define (play-game)
   (set! game-state (make-game-state (make-deck) '() '(0 0 0 0)))
   (display "Welcome to Stack 21!\n")
   (print-game-state game-state)
@@ -51,7 +51,26 @@ TODO: for some reason, you can pick mutliple cards right now... Umpire not enfor
 ;; wraps the place-card from game-commands.scm
 (define (place n)
   (set! game-state (place-card game-state n))
+  (set! game-state (game-ended? game-state))
   (print-game-state game-state))
+
+;; (game-ended? state) -> game-state
+;; checks if the game is won (any stack = 21) or lost (any stack > 21),
+(define (game-ended? state)
+  (let ((buckets (cdr (assoc 'bucket state))))
+    (cond
+     ;; loss if any bucket > 21
+     ((any? (lambda (x) (> x 21)) buckets)
+      (display "You lose! A stack went over 21!\n")
+      (display "Game has been reset. Play again!\n")
+      (make-game-state (make-deck) '() '(0 0 0 0)))
+     ;; win any bucket = 21
+     ((any? (lambda (x) (= x 21)) buckets)
+      (display "You win! One of your stacks hit 21 exactly!\n")
+      (display "Game has been reset. Play again!\n")
+      (make-game-state (make-deck) '() '(0 0 0 0)))
+     ;; continue
+     (else state))))
 
 
 ;; (card->string-simple card) -> string

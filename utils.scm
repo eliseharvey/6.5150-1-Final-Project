@@ -1,9 +1,8 @@
-(define (andmap pred lst)
-  (cond ((null? lst) #t)
-        ((pred (car lst)) (andmap pred (cdr lst)))
-        (else #f)))
+;; utils.scm
 
-(define (ormap pred lst)
-  (cond ((null? lst) #f)
-        ((pred (car lst)) #t)
-        (else (ormap pred (cdr lst)))))
+
+(define (any? pred lst)
+  (cond
+    ((null? lst) #f)
+    ((pred (car lst)) #t)
+    (else (any? pred (cdr lst)))))
