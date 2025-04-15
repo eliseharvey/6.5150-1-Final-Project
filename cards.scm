@@ -3,7 +3,7 @@
 (define (make-card rank suit)
   (list 'card rank suit))
 
-(define ranks '(2 3 4 5 6 7 8 9 10 'J 'Q 'K 'A))
+(define ranks '(2 3 4 5 6 7 8 9 10 j q k a))
 (define suits '(hearts diamonds clubs spades))
 
 (define (cartesian-product lst1 lst2)
@@ -70,6 +70,6 @@
 (define (card-value card)
   (let ((rank (if (list? (car card)) (car (car card)) (car card))))
     (cond ((eq? rank 'a) 11)
-          ((member rank '(k q j 10)) 10)
+          ((member rank '(k q j)) 10)
           ((number? rank) rank)
           (else 0))))
