@@ -2,15 +2,19 @@
 
 #|
 ;; Eli
-(load "path-to/6.5150-1-Final-Project/cards.scm")
-(load "path-to/6.5150-1-Final-Project/game-state.scm")
-(load "path-to/6.5150-1-Final-Project/utils.scm")
-(load "path-to/6.5150-1-Final-Project/game-commands.scm")
-(load "/path-to/6.5150-1-Final-Project/umpire.scm")
+
+(load "/Users/eli/6.5150/6.5150-1-Final-Project/cards.scm")
+(load "/Users/eli/6.5150/6.5150-1-Final-Project/game-state.scm")
+(load "/Users/eli/6.5150/6.5150-1-Final-Project/utils.scm")
+(load "/Users/eli/6.5150/6.5150-1-Final-Project/game-commands.scm")
+(load "/Users/eli/6.5150/6.5150-1-Final-Project/umpire.scm")
 |#
+
 
 #|
 ;; Elise
+
+#|
 (load "~/Desktop/6.5150-1-Final-Project/cards.scm")
 (load "~/Desktop/6.5150-1-Final-Project/game-state.scm")
 (load "~/Desktop/6.5150-1-Final-Project/utils.scm")
