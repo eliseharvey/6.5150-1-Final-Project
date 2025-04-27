@@ -7,17 +7,13 @@
 
 ;; (make-game-state deck hand bucket) -> game-state-alist
 ;; constructs a new game state object with players, deck, current turn and history
-(define (make-game-state deck hand bucket)
-  `((deck . ,deck)
-    (hand . ,hand)
-    (bucket . ,bucket)))
-;; to initialize game, call (make-game-state make-deck '() '(0 0 0 0))
-
 (define (make-game-state deck hand bucket cards-in-bucket)
   `((deck . ,deck)
     (hand . ,hand)
     (bucket . ,bucket)
     (cards-in-bucket . ,cards-in-bucket)))
+;; to initialize game, call (make-game-state make-deck '() '(0 0 0 0) '(() () () ()))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;        Accessor Helpers       ;;;;;
@@ -36,7 +32,6 @@
 ;; retrives the buckets
 (define (get-bucket state)
   (cdr (assoc 'bucket state)))
-
 
 (define (get-cards-in-bucket state)
   (cdr (assoc 'cards-in-bucket state)))

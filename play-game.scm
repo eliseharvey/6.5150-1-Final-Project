@@ -39,7 +39,7 @@ To play:
   (print-game-state game-state)
   (display "Commands:\n")
   (display "  (pick)        ; Draw a card from the deck\n")
-  (display "  (place n)     ; Place top card of hand into stack n (1–4)\n")
+  (display "  (place n)     ; Place top card of hand into stack n (1-4)\n")
   (display "  (print-game-state) ; Reprint current game state\n"))
 
 
