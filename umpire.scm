@@ -7,7 +7,7 @@
  
 (define (valid-place-in-stack? state bucket-index)
   (and (not (null? (cdr (get-player-hand state)))) ; non-empty hand
-       (and (>= bucket-index 0) (<= bucket-index 3)))) ; bucket in [0, 1, 2, 3]
+       (and (>= bucket-index 1) (<= bucket-index 4)))) ; bucket in [1, 2, 3, 4]
   
 ;; build umpire
 (define (build-umpire pick-rule place-rule)
