@@ -54,8 +54,11 @@
           (display "New hand: ")
           (display (cdr (get-player-hand updated-state)))
           (newline)
-          (display "Updated buckets: ")
+          (display "Updated bucket values: ")
           (display (get-bucket updated-state))
+          (newline)
+          (display "Cards in buckets:")
+          (display (get-cards-in-bucket updated-state))
           (newline)
 
           updated-state)
