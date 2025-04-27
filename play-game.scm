@@ -34,7 +34,7 @@ To play:
 ;; (play-game) -> void
 ;; initializes a new game and sets the global `game-state` variable.
 (define (play-game)
-  (set! game-state (make-game-state (make-deck) '() '(0 0 0 0)))
+  (set! game-state (make-game-state (make-deck) '() '(0 0 0 0) '(() () () ())))
   (display "Welcome to Stack 21!\n")
   (print-game-state game-state)
   (display "Commands:\n")
@@ -66,12 +66,12 @@ To play:
      ((any? (lambda (x) (> x 21)) buckets)
       (display "You lose! A stack went over 21!\n")
       (display "Game has been reset. Play again!\n")
-      (make-game-state (make-deck) '() '(0 0 0 0)))
+      (make-game-state (make-deck) '() '(0 0 0 0) '(() () () ())))
      ;; win any bucket = 21
      ((any? (lambda (x) (= x 21)) buckets)
       (display "You win! One of your stacks hit 21 exactly!\n")
       (display "Game has been reset. Play again!\n")
-      (make-game-state (make-deck) '() '(0 0 0 0)))
+      (make-game-state (make-deck) '() '(0 0 0 0) '(() () () ())))
      ;; continue
      (else state))))
 

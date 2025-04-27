@@ -13,6 +13,12 @@
     (bucket . ,bucket)))
 ;; to initialize game, call (make-game-state make-deck '() '(0 0 0 0))
 
+(define (make-game-state deck hand bucket cards-in-bucket)
+  `((deck . ,deck)
+    (hand . ,hand)
+    (bucket . ,bucket)
+    (cards-in-bucket . ,cards-in-bucket)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;        Accessor Helpers       ;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -30,6 +36,14 @@
 ;; retrives the buckets
 (define (get-bucket state)
   (cdr (assoc 'bucket state)))
+
+
+(define (get-cards-in-bucket state)
+  (cdr (assoc 'cards-in-bucket state)))
+
+(define (update-cards-in-bucket state index new-cards)
+  (let ((cards-in-bucket (get-cards-in-bucket state)))
+    (assoc-set state 'cards-in-bucket (replace-nth cards-in-bucket index new-cards))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Update Helpers (pure/immutable)   ;;;
