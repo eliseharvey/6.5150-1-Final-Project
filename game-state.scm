@@ -7,12 +7,11 @@
 
 ;; (make-game-state deck hand bucket) -> game-state-alist
 ;; constructs a new game state object with players, deck, current turn and history
-(define (make-game-state deck hand bucket cards-in-bucket)
+(define (make-game-state deck player-hand dealer-hand)
   `((deck . ,deck)
-    (hand . ,hand)
-    (bucket . ,bucket)
-    (cards-in-bucket . ,cards-in-bucket)))
-;; to initialize game, call (make-game-state make-deck '() '(0 0 0 0) '(() () () ()))
+    (player-hand . ,player-hand)
+    (dealer-hand . ,dealer-hand)))
+;; to initialize game, call (make-game-state (make-deck) '() '())
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -26,19 +25,11 @@
 ;; (get-player-hand state) -> list-of-cards
 ;; retrieves the player's hand
 (define (get-player-hand state)
-  (assoc 'hand state))
+  (cdr (assoc 'player-hand state)))
 
-;; (get-bucket state) -> list-of-buckets
-;; retrives the buckets
-(define (get-bucket state)
-  (cdr (assoc 'bucket state)))
+(define (get-dealer-hand state)
+  (cdr (assoc 'dealer-hand state)))
 
-(define (get-cards-in-bucket state)
-  (cdr (assoc 'cards-in-bucket state)))
-
-(define (update-cards-in-bucket state index new-cards)
-  (let ((cards-in-bucket (get-cards-in-bucket state)))
-    (assoc-set state 'cards-in-bucket (replace-nth cards-in-bucket index new-cards))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Update Helpers (pure/immutable)   ;;;
@@ -54,15 +45,15 @@
 ;; (update-player-hand state new-hand) -> updated-state
 ;; replace current hand with hand passed in
 (define (update-player-hand state new-hand)
-  (assoc-set state 'hand new-hand))
+  (assoc-set state 'player-hand new-hand))
 
 ;; (update-deck state new-deck) -> updated-state
 ;; replaces the deck in the game state
 (define (update-deck state new-deck)
   (assoc-set state 'deck new-deck))
 
-(define (get-bucket-value state index)
-  (list-ref (get-bucket state) index))
+(define (update-dealer-hand state new-dealer-hand)
+  (assoc-set state 'dealer-hand new-dealer-hand))
 
 (define (replace-nth lst n new-val)
    (if (null? lst)

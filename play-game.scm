@@ -34,13 +34,20 @@ To play:
 ;; (play-game) -> void
 ;; initializes a new game and sets the global `game-state` variable.
 (define (play-game)
-  (set! game-state (make-game-state (make-deck) '() '(0 0 0 0) '(() () () ())))
-  (display "Welcome to Stack 21!\n")
-  (print-game-state game-state)
-  (display "Commands:\n")
-  (display "  (pick)        ; Draw a card from the deck\n")
-  (display "  (place n)     ; Place top card of hand into stack n (1-4)\n")
-  (display "  (print-game-state) ; Reprint current game state\n"))
+  (let ((deck (make-deck)))
+    (let-values (((player-hand initial-deck-player) (deal-cards deck 2)))
+      (let-values (((dealer-hand remaining-deck) (deal-cards initial-deck-player 2)))
+        (set! game-state (make-game-state remaining-deck player-hand dealer-hand))
+        (display "Welcome to Blackjack!\n")
+        (display "Your Hand\n")
+        (display player-hand)
+        (newline)
+        (display "Dealer Shows:")
+        (display (car dealer-hand))
+        (newline)
+        (display "Commands:\n")
+        (display "  (hit)        ; Draw a card from the deck\n")
+        (display "  (stand)     ; End your turn\n")))))
 
 
 ;; (pick) -> void
@@ -50,6 +57,23 @@ To play:
   (print-game-state game-state))
 
 
+
+(define (hit)
+  (set! game-state (player-hit game-state))
+  (print-game-state game-state)
+  (if (player-bust? game-state)
+      (begin
+        (display "You busted! You lose.\n")
+        (play-game)) ; Start a new game
+      (display "Choose to (hit) or (stand)\n")))
+
+(define (stand)
+  (set! game-state (dealer-play game-state))
+  (print-game-state game-state)
+  (determine-winner game-state)
+  (play-game)) ; Start a new game
+
+#|
 ;; (place n) -> void
 ;; wraps the place-card from game-commands.scm
 (define (place n)
@@ -74,7 +98,7 @@ To play:
       (make-game-state (make-deck) '() '(0 0 0 0) '(() () () ())))
      ;; continue
      (else state))))
-
+|#
 
 ;; (card->string-simple card) -> string
 ;; converts a card (list 'card rank suit) into a simple string
@@ -91,15 +115,15 @@ To play:
 ;; nicely prints the current game state (hand, stacks, and deck size).
 (define (print-game-state state)
   (display "=== Game State ===\n")
-  ;; Print buckets
-  (display "Buckets:\n")
-  (let ((buckets (cdr (assoc 'bucket state))))
-    (let loop ((buckets buckets) (i 1))
-      (unless (null? buckets)
-        (display (string-append "  Stack " (number->string i) ": "))
-        (display (number->string (car buckets)))
-        (newline)
-        (loop (cdr buckets) (+ i 1)))))
+  ;; Print player's hand and score
+  (display "Player's Hand: ")
+  (display (get-player-hand state))
+  (newline)
+  (display "Player's Score: ")
+  (newline)
+  ;; Print dealer's hand (hide one card) and score
+  (display "Dealer's Hand: ")
+  (display (get-dealer-hand state))
   (newline)
   ;; print deck size
   (let ((deck (cdr (assoc 'deck state))))
