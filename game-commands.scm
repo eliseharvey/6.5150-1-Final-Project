@@ -68,14 +68,10 @@
            (if (> score 21)
                (adjust-aces hand score num-aces)
                score))
-          ((eq? (cdr cards) 'a) ; Corrected Ace check
-           (display "Found an Ace. Adding 11 to score.\n")
+          ((eq? (car cards) 'a) ; Corrected Ace check
            (loop (cdr cards) (+ score 11) (+ num-aces 1)))
           (else
            (let ((card-val (card-value (car cards))))
-             (display "Found a non-Ace. Card value: ")
-             (display card-val)
-             (newline)
              (loop (cdr cards) (+ score card-val) num-aces))))))
 
 ;; (adjust-aces cards score num-aces) -> adjusted-score
@@ -100,13 +96,37 @@
 
 
 (define (determine-winner state)
-  (let ((player-score (calculate-hand-score (cdr (get-player-hand state))))
-        (dealer-score (calculate-hand-score (cdr (get-dealer-hand state)))))
-    (cond ((player-bust? state) (display "You busted, Dealer Wins!\n"))
-          ((dealer-bust? state) (display "Dealer busted, You Win!\n"))
-          ((> player-score dealer-score) (display "You Win!\n"))
-          ((< player-score dealer-score) (display "Dealer Wins!\n"))
-          (else (display "It's a tie!\n")))))
+  (display  (get-player-hand state))
+  (display  (get-dealer-hand state))
+  (newline)
+
+  (let ((player-score (calculate-hand-score  (get-player-hand state)))
+        (dealer-score (calculate-hand-score  (get-dealer-hand state))))
+    (cond ((player-bust? state)
+           (display "You busted, Dealer Wins!\n")
+           (display "Dealer's Hand: ")
+           (display  (get-dealer-hand state))
+           (newline))
+          ((dealer-bust? state)
+           (display "Dealer busted, You Win!\n")
+           (display "Dealer's Hand: ")
+           (display (get-dealer-hand state))
+           (newline))
+          ((> player-score dealer-score)
+           (display "You Win!\n")
+           (display "Dealer's Hand: ")
+           (display  (get-dealer-hand state))
+           (newline))
+          ((< player-score dealer-score)
+           (display "Dealer Wins!\n")
+           (display "Dealer's Hand: ")
+           (display  (get-dealer-hand state))
+           (newline))
+          (else
+           (display "It's a tie!\n")
+           (display "Dealer's Hand: ")
+           (display  (get-dealer-hand state))
+           (newline)))))
 
 (define (adjust-aces cards score num-aces)
   (cond ((or (<= score 21) (= num-aces 0))

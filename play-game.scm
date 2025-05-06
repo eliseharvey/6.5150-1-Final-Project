@@ -38,6 +38,9 @@ To play:
     (let-values (((player-hand initial-deck-player) (deal-cards deck 2)))
       (let-values (((dealer-hand remaining-deck) (deal-cards initial-deck-player 2)))
         (set! game-state (make-game-state remaining-deck player-hand dealer-hand))
+        (display "==================\n")
+        (display "New Game!\n")
+        (display "==================\n")
         (display "Welcome to Blackjack!\n")
         (display "Your Hand\n")
         (display player-hand)
@@ -73,32 +76,6 @@ To play:
   (determine-winner game-state)
   (play-game)) ; Start a new game
 
-#|
-;; (place n) -> void
-;; wraps the place-card from game-commands.scm
-(define (place n)
-  (set! game-state (place-card game-state n))
-  (set! game-state (game-ended? game-state))
-  (print-game-state game-state))
-
-;; (game-ended? state) -> game-state
-;; checks if the game is won (any stack = 21) or lost (any stack > 21),
-(define (game-ended? state)
-  (let ((buckets (cdr (assoc 'bucket state))))
-    (cond
-     ;; loss if any bucket > 21
-     ((any? (lambda (x) (> x 21)) buckets)
-      (display "You lose! A stack went over 21!\n")
-      (display "Game has been reset. Play again!\n")
-      (make-game-state (make-deck) '() '(0 0 0 0) '(() () () ())))
-     ;; win any bucket = 21
-     ((any? (lambda (x) (= x 21)) buckets)
-      (display "You win! One of your stacks hit 21 exactly!\n")
-      (display "Game has been reset. Play again!\n")
-      (make-game-state (make-deck) '() '(0 0 0 0) '(() () () ())))
-     ;; continue
-     (else state))))
-|#
 
 ;; (card->string-simple card) -> string
 ;; converts a card (list 'card rank suit) into a simple string
@@ -110,7 +87,7 @@ To play:
       (string-append (symbol->string (cadr card)) " of " (symbol->string (caddr card)))
       "<invalid card>"))
 
-      
+
 ;; (print-game-state state) -> void
 ;; nicely prints the current game state (hand, stacks, and deck size).
 (define (print-game-state state)
@@ -119,13 +96,10 @@ To play:
   (display "Player's Hand: ")
   (display (get-player-hand state))
   (newline)
-  (display "Player's Score: ")
-  (newline)
   ;; Print dealer's hand (hide one card) and score
-  (display "Dealer's Hand: ")
-  (display (get-dealer-hand state))
+  (display "Dealer's Showing: ")
+  (display (display-dealer-hand state))
   (newline)
-  ;; print deck size
   (let ((deck (cdr (assoc 'deck state))))
     (display (string-append "Deck size: " (number->string (length deck)) "\n")))
   (display "==================\n"))

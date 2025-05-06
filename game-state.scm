@@ -30,6 +30,9 @@
 (define (get-dealer-hand state)
   (cdr (assoc 'dealer-hand state)))
 
+(define (display-dealer-hand state)
+  (car (get-dealer-hand state)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Update Helpers (pure/immutable)   ;;;
