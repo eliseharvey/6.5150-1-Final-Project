@@ -15,6 +15,19 @@
 (define ranks '(2 3 4 5 6 7 8 9 10 j q k a))
 (define suits '(hearts diamonds clubs spades))
 
+#|
+;; Extensible cartesian product function for more than 2 lists
+(define (cartesian-product lists)
+  (if (null? lists)
+      (list '()) 
+      (let ((first-list (car lists))
+            (rest-lists (cdr lists)))
+        (append-map (lambda (x)
+                      (map (lambda (y) (cons x y))
+                           (cartesian-product rest-lists)))
+                    first-list))))
+|# 
+
 
 ;; (cartesian-product lst1 lst2) -> list-of-pairs
 ;; returns the cartesian product of two lists... used to build generic deck
