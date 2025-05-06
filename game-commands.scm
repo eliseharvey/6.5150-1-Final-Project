@@ -60,30 +60,26 @@
 ;; calculates total score of cards in a bucket, treating Aces as 11 by default
 ;; adjusts Aces to 1 as needed to avoid busting over 21
 (define (calculate-hand-score hand)
-  (let loop ((cards hand) (score 0) (num-aces 0))
-    (cond ((null? cards)
-           (display "No more cards. Final score: ")
-           (display score)
-           (newline)
-           (if (> score 21)
-               (adjust-aces hand score num-aces)
-               score))
-          ((eq? (car cards) 'a) ; Corrected Ace check
-           (loop (cdr cards) (+ score 11) (+ num-aces 1)))
-          (else
-           (let ((card-val (card-value (car cards))))
-             (loop (cdr cards) (+ score card-val) num-aces))))))
+  (let ((full-hand hand))  ; Binding full-hand to hand
+    (let loop ((cards hand) (score 0) (num-aces 0))
+      (cond ((null? cards)
+             (if (> score 21)
+                (adjust-aces full-hand score num-aces)  
+                 score))
+            ((eq? (car (car cards)) 'a) ; Corrected Ace check
+             (loop (cdr cards) (+ score 11) (+ num-aces 1)))
+            (else
+             (let ((card-val (card-value (car cards))))
+               (loop (cdr cards) (+ score card-val) num-aces)))))))
+
 
 ;; (adjust-aces cards score num-aces) -> adjusted-score
 ;; recursively reduces score by 10 for each Ace if score > 21
 (define (adjust-aces cards score num-aces)
   (cond ((or (<= score 21) (= num-aces 0))
-         (display "Score <= 21 or no more Aces, returning score.\n")
          score)
         (else
-         (display "Score > 21 and Aces remain, subtracting 10 and recursing.\n")
          (adjust-aces cards (- score 10) (- num-aces 1)))))
-
 
 
 
@@ -96,10 +92,6 @@
 
 
 (define (determine-winner state)
-  (display  (get-player-hand state))
-  (display  (get-dealer-hand state))
-  (newline)
-
   (let ((player-score (calculate-hand-score  (get-player-hand state)))
         (dealer-score (calculate-hand-score  (get-dealer-hand state))))
     (cond ((player-bust? state)
@@ -127,9 +119,3 @@
            (display "Dealer's Hand: ")
            (display  (get-dealer-hand state))
            (newline)))))
-
-(define (adjust-aces cards score num-aces)
-  (cond ((or (<= score 21) (= num-aces 0))
-         score)
-        (else
-         (adjust-aces cards (- score 10) (- num-aces 1)))))
