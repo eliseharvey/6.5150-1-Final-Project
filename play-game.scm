@@ -91,8 +91,8 @@ To play:
 ;; nicely prints the current game state (hand, stacks, and deck size).
 (define (print-game-state state)
   (display "=== Game State ===\n")
-  ;; Print buckets
-  (display "Buckets:\n")
+  ;; Print stacks
+  (display "Stacks:\n")
   (let ((buckets (cdr (assoc 'bucket state))))
     (let loop ((buckets buckets) (i 1))
       (unless (null? buckets)
