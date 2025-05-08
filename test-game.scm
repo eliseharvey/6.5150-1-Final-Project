@@ -42,27 +42,34 @@ To test, simply load this file after uncommenting related loads above.
 (print-game-state game-state)
 (print-divider)
 
-;; test: picking card
+;; test: VALID picking card
 (display "TEST 2: Picking a card...\n")
 (set! game-state (pick-card game-state))
 (print-game-state game-state)
 (print-divider)
 
-;; test: placing card
-(display "TEST 3: Attempting to place card into Stack 2...\n")
-(let ((valid? (umpire game-state "place" 2)))
-  (display (if valid?
-               "Valid move. Proceeding...\n"
-               "Invalid move. Should not place.\n"))
-  (if valid?
-      (begin
-        (set! game-state (place-card game-state 2))
-        (print-game-state game-state))
-      (display "Skipping placement due to invalid move.\n")))
+;; test: NOT VALID picking a card
+(display "TEST 3: Should fail picking a card...\n")
+(define game-state (make-game-state (make-deck) (list (make-card 'j 'hearts)) '(0 0 0 0) '(() () () ())))
+(set! game-state (pick-card game-state))
+(print-game-state game-state)
+(print-divider)
+
+;; test: VALID placing card
+(display "TEST 4: Attempting to place card into Stack 2...\n")
+(set! game-state (place-card game-state 2))
+(print-game-state game-state)
+(print-divider)
+
+;; test: NOT VALID placing card
+(display "TEST 5: Should fail to place card into Stack 5...\n")
+(define game-state (make-game-state (make-deck) (list (make-card 10 'hearts)) '(0 0 0 0) '(() () () ())))
+(set! game-state (place-card game-state 5))
+(print-game-state game-state)
 (print-divider)
 
 ;; test: losing game
-(display "TEST 4: Testing a loss...\n")
+(display "TEST 6: Testing a loss...\n")
 (define stacked-state
   (make-game-state
    '()
@@ -76,7 +83,7 @@ To test, simply load this file after uncommenting related loads above.
 (print-divider)
 
 ;; test: winning game
-(display "TEST 5: Testing a loss...\n")
+(display "TEST 7: Testing a victory...\n")
 (define win-state
   (make-game-state
    '()
