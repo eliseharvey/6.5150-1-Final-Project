@@ -7,7 +7,9 @@ This project aims to explore turn-based card games like Blackjack, War, and even
 
 To make this feasible in our time allotment, we created a game called *Stack 21* and implemented it using our card game components. The goal of the game is to build a stack that sums to 21, starting with four empty stacks. The player will alternate picking and placing cards until they either win (get a stack that sums exactly to 21) or they lose (a stack goes ovr 21).
 
-_ELI ADD AMB/ACES THING_
+Like Blackjack, aces may take on the value of 11 or 1. Aces will initially be 11, but if this would cause the score to exceed 21, values will be optimized to get the player as close to 21 as possible without going over.
+
+To see the extension for Blackjack, checkout the blackjack branch. Stack-21 is on the mainline.
 
 ---
 

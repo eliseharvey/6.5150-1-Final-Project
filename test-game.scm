@@ -57,6 +57,12 @@ To test, simply load this file after uncommenting related loads above.
 
 ;; test: VALID placing card
 (display "TEST 4: Attempting to place card into Stack 2...\n")
+(define game-state
+    (make-game-state
+   '()
+   '((10 hearts))
+   '(9 0 0 0)
+   '(((9 diamonds)) () () ())))
 (set! game-state (place-card game-state 2))
 (print-game-state game-state)
 (print-divider)
@@ -104,11 +110,9 @@ To test, simply load this file after uncommenting related loads above.
 (define ace-eleven-state
   (make-game-state
    '()
-   (list (make-card 'a 'hearts))
+   '((a hearts))
    '(9 0 0 0)
-   (list (list (make-card 9 'diamonds)) '() '() '())))
-(calculate-bucket-score (car (get-cards-in-bucket ace-eleven-state))) ;; WHY IS IT SAYING 0
-(print-game-state ace-eleven-state) ;; sanity check that values are there?
+   '(((9 diamonds)) () () ())))
 (set! ace-eleven-state (place-card ace-eleven-state 1))
 (print-game-state ace-eleven-state)
 (display "Expected bucket 1 value: 20\n")
@@ -120,9 +124,10 @@ To test, simply load this file after uncommenting related loads above.
 (define ace-one-state
   (make-game-state
    '()
-   '()
-   '(0 0 0 0)
-   '(() () () ())))
-;; TODO after figuring out why 8 is wonky
-(display "Expected bucket 1 value: 21\n")
+   '((a hearts))
+   '(11 0 0 0)
+   '(((a diamonds)) () () ())))
+(set! ace-one-state (place-card ace-one-state 1))
+(print-game-state ace-one-state)
+(display "Expected bucket 1 value: 12\n")
 (print-divider)
