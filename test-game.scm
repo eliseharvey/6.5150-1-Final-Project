@@ -98,3 +98,31 @@ To test, simply load this file after uncommenting related loads above.
 (define win-result (game-ended? win-state))
 (print-game-state win-result)
 (print-divider)
+
+;; test: ace counts as 11 when under or equal to 21
+(display "TEST 8: Ace as 11 (total under 21)...\n")
+(define ace-eleven-state
+  (make-game-state
+   '()
+   (list (make-card 'a 'hearts))
+   '(9 0 0 0)
+   (list (list (make-card 9 'diamonds)) '() '() '())))
+(calculate-bucket-score (car (get-cards-in-bucket ace-eleven-state))) ;; WHY IS IT SAYING 0
+(print-game-state ace-eleven-state) ;; sanity check that values are there?
+(set! ace-eleven-state (place-card ace-eleven-state 1))
+(print-game-state ace-eleven-state)
+(display "Expected bucket 1 value: 20\n")
+(print-divider)
+
+
+;; test: ace counts as 1 when total would otherwise go over 21
+(display "TEST 9: Ace as 1 (would go over 21)...\n")
+(define ace-one-state
+  (make-game-state
+   '()
+   '()
+   '(0 0 0 0)
+   '(() () () ())))
+;; TODO after figuring out why 8 is wonky
+(display "Expected bucket 1 value: 21\n")
+(print-divider)
